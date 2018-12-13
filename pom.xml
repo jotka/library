@@ -1,0 +1,272 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>dk.nykredit.library</groupId>
+	<artifactId>BooksManagement</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>BooksManagement</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+		<version.jboss.bom>10.0.1.Final</version.jboss.bom>
+		<version.arquillian_core>1.1.11.Final</version.arquillian_core>
+		<version.wildfly>10.0.0.Final</version.wildfly>
+		<version.org.wildfly.arquillian>2.0.0.Final</version.org.wildfly.arquillian>
+		<version.jackson>2.6.3</version.jackson>
+		<version.deltaspike>1.7.1</version.deltaspike>
+		<version.hibernate>5.2.10.Final</version.hibernate>
+
+		<!-- Apache components versions -->
+		<version.httpclient>4.5</version.httpclient>
+		<version.commons-io>2.4</version.commons-io>
+
+		<!-- other plugin versions -->
+		<version.compiler.plugin>3.5.1</version.compiler.plugin>
+		<version.surefire.plugin>2.19.1</version.surefire.plugin>
+		<version.war.plugin>2.5</version.war.plugin>
+
+		<!-- maven-compiler-plugin -->
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<junit.includes>**/arqtest/*Test.java</junit.includes>
+		<junit.excludes></junit.excludes>
+	</properties>
+
+	<profiles>
+		<profile>
+			<!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
+			<!-- Seperate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<junit.includes>**/*Test*</junit.includes>
+				<junit.excludes>**/arqtest/*</junit.excludes>
+			</properties>
+		</profile>
+
+		<profile>
+			<!-- An optional Arquillian testing profile that executes tests in a remote WildFly instance -->
+			<!-- Run with: mvn clean test -Parq-wildfly-remote -->
+			<id>arq-wildfly-remote</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.wildfly.arquillian</groupId>
+					<artifactId>wildfly-arquillian-container-remote</artifactId>
+					<version>${version.org.wildfly.arquillian}</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.wildfly.plugins</groupId>
+				<artifactId>wildfly-maven-plugin</artifactId>
+				<version>2.0.0.Final</version>
+			</plugin>
+		</plugins>
+		<finalName>BooksManagement</finalName>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.deltaspike.distribution</groupId>
+				<artifactId>distributions-bom</artifactId>
+				<version>${version.deltaspike}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+
+			<!-- JBoss distributes a complete set of Java EE 7 APIs including a Bill
+            of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection)
+            of artifacts. We use this here so that we always get the correct versions
+            of artifacts. Here we use the jboss-javaee-7.0-with-tools stack (you can
+            read this as the JBoss stack of the Java EE 7 APIs, with some extras tools
+            for your project, such as Arquillian for testing) and the jboss-javaee-7.0-with-hibernate
+            stack you can read this as the JBoss stack of the Java EE 7 APIs, with extras
+            from the Hibernate family of projects) -->
+			<dependency>
+				<groupId>org.wildfly.bom</groupId>
+				<artifactId>wildfly-javaee7-with-tools</artifactId>
+				<version>${version.jboss.bom}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${version.httpclient}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${version.commons-io}</version>
+			</dependency>
+			<!-- JBoss Arquillian -->
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${version.arquillian_core}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+			<artifactId>jboss-concurrency-api_1.0_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- First declare the APIs we depend on and need for compilation. All of them are provided by JBoss WildFly -->
+
+		<!-- Import the CDI API, we use provided scope as the API is included in JBoss WildFly -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the Common Annotations API (JSR-250), we use provided scope as the API is included in JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.annotation</groupId>
+			<artifactId>jboss-annotations-api_1.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jaxrs</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-validator-provider-11</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Import the EJB API, we use provided scope as the API is included in JBoss WildFly -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>0.7.5</version>
+		</dependency>
+
+		<!--Commons -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.8</version>
+		</dependency>
+
+		<!-- Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${version.jackson}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${version.jackson}</version>
+		</dependency>
+
+		<!-- TESTS -->
+		<!-- JAXRS test need the dependency:resteasy-client -->
+		<!-- Import the RestEasy Client and Jackson provider, we use test scope
+        as we need that for test purposes -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson2-provider</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Now we declare the dependencies needed by the jaxrs-client -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-depchain</artifactId>
+			<scope>test</scope>
+			<type>pom</type>
+		</dependency>
+
+		<!-- Needed for running tests (you may also use TestNG) -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Optional, but highly recommended -->
+		<!-- Arquillian allows you to test enterprise code such as EJBs and Transactional(JTA)
+        JPA from JUnit/TestNG -->
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+	</dependencies>
+</project>
