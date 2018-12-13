@@ -13,8 +13,6 @@
         <version.jboss.bom>10.0.1.Final</version.jboss.bom>
         <version.wildfly>10.0.0.Final</version.wildfly>
         <version.jackson>2.6.3</version.jackson>
-        <!-- Apache components versions -->
-        <version.httpclient>4.5</version.httpclient>
         <!-- other plugin versions -->
         <version.compiler.plugin>3.5.1</version.compiler.plugin>
         <version.surefire.plugin>2.19.1</version.surefire.plugin>
@@ -62,11 +60,6 @@
                 <version>${version.jboss.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>${version.httpclient}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
