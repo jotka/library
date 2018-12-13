@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Arquillian.class)
 public class BookServiceTest {
 
-    @Deployment
+    @Deployment(testable = true)
     public static WebArchive create() {
         return ShrinkWrap.create(WebArchive.class)
                 .addPackage(BookDb.class.getPackage())

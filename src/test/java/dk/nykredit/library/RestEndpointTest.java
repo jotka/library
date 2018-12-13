@@ -16,12 +16,18 @@ import org.junit.runner.RunWith;
 import javax.ws.rs.core.Response;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Arquillian.class)
 public class RestEndpointTest {
+
+    @ArquillianResource
+    URL basePath;
 
     @Deployment(testable = false)
     public static WebArchive create() {
@@ -32,16 +38,35 @@ public class RestEndpointTest {
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
-    @Test @RunAsClient
-    public void shouldCountCars(@ArquillianResource(BookResource.class) URL basePath) {
-        System.out.println(basePath);
+    @Test
+    @RunAsClient
+    public void shouldGetAllBooks() {
+        given().
+                when().
+                get(basePath + "api/books").
+                then().
+                statusCode(Response.Status.OK.getStatusCode()).
+                body("book", hasSize(2));
+    }
 
+    @Test
+    @RunAsClient
+    public void shouldCreateBook() {
+        Map<String, String> book= new HashMap<>();
+        book.put("title", "new book");
+        given().
+                contentType("application/json").
+                body(book).
+                when().
+                post(basePath + "api/books").
+                then().
+                statusCode(Response.Status.CREATED.getStatusCode()).extract().asString();
 
-//        given().
-//                when().
-//                get(basePath + "api/books").
-//                then().
-//                statusCode(Response.Status.OK.getStatusCode()).
-//                body(equalTo("4"));
+        given().
+                when().
+                get(basePath + "api/books/3").
+                then().
+                statusCode(Response.Status.OK.getStatusCode()).
+                body("title", equalTo("new book"));
     }
 }
