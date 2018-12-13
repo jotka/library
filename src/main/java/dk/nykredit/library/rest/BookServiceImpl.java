@@ -26,7 +26,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Integer createBook(String title, Status status) throws BookException {
-        if (title == null) throw new BookException("Book title for create missing.", Response.Status.BAD_REQUEST);
+        if ("".equals(title) || title == null)
+            throw new BookException("Book title for create missing.", Response.Status.BAD_REQUEST);
 
         return BookDb.createBook(title, status);
     }
@@ -34,7 +35,7 @@ public class BookServiceImpl implements BookService {
     public Book updateBook(Integer id, Book book) throws BookException {
         Optional<Book> bookOptional = BookDb.getBook(id);
         if (bookOptional.isPresent()) {
-            if (book.getTitle() == null)
+            if ("".equals(book.getTitle()) || book.getTitle() == null)
                 throw new BookException("Book title for update missing.", Response.Status.BAD_REQUEST);
             BookDb.updateBook(id, book);
             return bookOptional.get();

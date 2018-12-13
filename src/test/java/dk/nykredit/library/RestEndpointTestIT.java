@@ -21,11 +21,10 @@ import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Arquillian.class)
-public class RestEndpointTest {
+public class RestEndpointTestIT {
 
     @ArquillianResource
     URL basePath;
@@ -71,4 +70,20 @@ public class RestEndpointTest {
                 statusCode(Response.Status.OK.getStatusCode()).
                 body("title", equalTo("new book"));
     }
+
+    @Test
+    @RunAsClient
+    public void shouldNotCreateBookWithoutTitle() {
+        Map<String, String> book = new HashMap<>();
+        book.put("title", "");
+
+        given().
+                contentType("application/json").
+                body(book).
+                when().
+                post(basePath + "api/books").
+                then().
+                statusCode(Response.Status.BAD_REQUEST.getStatusCode()).extract().asString();
+    }
+
 }
