@@ -211,6 +211,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.arquillian.universe</groupId>
             <artifactId>arquillian-chameleon</artifactId>
             <scope>test</scope>

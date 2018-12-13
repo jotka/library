@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -45,14 +46,15 @@ public class RestEndpointTest {
                 when().
                 get(basePath + "api/books").
                 then().
-                statusCode(Response.Status.OK.getStatusCode()).
-                body("book", hasSize(2));
+                body("book.size()", greaterThan(0)).
+                statusCode(Response.Status.OK.getStatusCode());
+
     }
 
     @Test
     @RunAsClient
     public void shouldCreateBook() {
-        Map<String, String> book= new HashMap<>();
+        Map<String, String> book = new HashMap<>();
         book.put("title", "new book");
         given().
                 contentType("application/json").
