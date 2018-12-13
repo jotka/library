@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 @RunWith(Arquillian.class)
-public class RestEndpointTestIT {
+public class RestEndpointTest {
 
     @ArquillianResource
     URL basePath;
