@@ -11,11 +11,4 @@
             <property name="chameleonTarget">wildfly:11.0.0.Final:managed</property>
         </configuration>
     </container>
-
-    <container qualifier="glasfish">
-        <configuration>
-            <property name="chameleonTarget">glassfish:5.x:managed</property>
-        </configuration>
-    </container>
-
 </arquillian>
