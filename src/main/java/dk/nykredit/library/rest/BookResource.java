@@ -18,11 +18,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import dk.nykredit.library.dao.BookDb;
 import dk.nykredit.library.domain.Book;
 import dk.nykredit.library.domain.Books;
 import dk.nykredit.library.domain.Message;
-import dk.nykredit.library.domain.Status;
 
 /**
  * This REST resource has common path "/books" and
@@ -92,7 +90,7 @@ public class BookResource {
     @Consumes("application/json")
     public Response createBook(Book book) {
         try {
-            Integer id = bookService.createBook(book.getContent(), book.getStatus());
+            Integer id = bookService.createBook(book.getTitle(), book.getStatus());
             Link lnk = Link.fromUri(uriInfo.getPath() + "/" + id).rel("self").build();
             return Response.status(Response.Status.CREATED).location(lnk.getUri()).build();
         } catch (BookException exc) {
@@ -127,13 +125,5 @@ public class BookResource {
         } catch (BookException exc) {
             return Response.status(exc.getStatus()).entity(new Message(exc.getMessage())).build();
         }
-    }
-
-    /*
-     * Initialize the application with these two books
-     */
-    static {
-        BookDb.createBook("Java in practice", Status.READ);
-        BookDb.createBook("Concurrency in Java", Status.UNREAD);
     }
 }

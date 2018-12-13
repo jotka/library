@@ -17,7 +17,7 @@ public class Book {
     @XmlElement
     private Link link;
     @XmlElement
-    private String content;
+    private String title;
     @XmlElement
     private Status status;
 
@@ -37,12 +37,12 @@ public class Book {
         this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Status getStatus() {
