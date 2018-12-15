@@ -12,7 +12,7 @@
         <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
         <version.jboss.bom>10.0.1.Final</version.jboss.bom>
         <version.wildfly>10.0.0.Final</version.wildfly>
-        <version.jackson>2.8.11.1</version.jackson>
+        <version.jackson>2.6.3</version.jackson>
         <!-- other plugin versions -->
         <version.compiler.plugin>3.5.1</version.compiler.plugin>
         <version.surefire.plugin>2.19.1</version.surefire.plugin>
